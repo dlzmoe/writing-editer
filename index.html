@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="https://cdn.zburu.com/favicon.ico" type="image/x-icon">
+
+  <link rel="stylesheet" href="./assets/css/quill.min.css">
+  <link rel="stylesheet" href="./assets/css/main.min.css">
+  <title>Editer</title>
+</head>
+
+<body>
+  <div id="app">
+    <div class="theme">
+      <span id="dark">Dark</span>
+      <span id="light">Light</span>
+    </div>
+    <div class="title">
+      <input id="title_input" type="text" value="" placeholder="Title">
+      <span id="date"></span>
+    </div>
+    <div id="editor"></div>
+  </div>
+  <script src="./assets/js/quill.js"></script>
+  <script>
+    document.getElementById('title_input').focus();
+    var quill = new Quill('#editor', {
+      theme: 'bubble',
+      placeholder: 'please enter something...\n1. 推荐按f11，享受沉浸式写作体验。\n2. 右上角可切换黑夜模式，更加护眼。\n3. 鼠标选中文字，可配置字体格式。\n4. 本地实时保存到浏览器，既保证隐私，又防止内容丢失。\n5. 静态程序支持安装到自己的域名： https://github.com/zburu/writing-editer。'
+    });
+
+    // 切换黑夜模式
+    const dark = document.getElementById('dark');
+    const light = document.getElementById('light');
+    const themeby = JSON.parse(localStorage.getItem("theme"));
+    const body = document.getElementsByTagName('body')[0]
+    if (themeby != null) {
+      body.className = themeby;
+      if (themeby == 'theme-dark') {
+        dark.style.display = 'none';
+        light.style.display = 'block';
+      }
+    }
+
+    dark.onclick = function () {
+      dark.style.display = 'none';
+      light.style.display = 'block';
+      body.className = 'theme-dark';
+      const theme = body.className
+      localStorage.setItem("theme", JSON.stringify(theme));
+    }
+    light.onclick = function () {
+      dark.style.display = 'block';
+      light.style.display = 'none';
+      body.className = '';
+      const theme = body.className
+      localStorage.setItem("theme", JSON.stringify(theme));
+    }
+
+    // 获取date
+    var d = new Date();
+    var months =
+      [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+      ];
+    var year = d.getFullYear();
+    var month = months[d.getMonth()];
+    var date = d.getDate();
+    document.getElementById("date").innerHTML = month + " " + date + "," + year
+
+    // console.log(title);
+    const number = JSON.parse(localStorage.getItem("content"));
+    if (number != null) {
+      const content = number[1].replace('\n\n', '')
+      document.getElementById('editor').getElementsByClassName('ql-editor')[0].innerHTML = content;
+      document.getElementById('title_input').value = number[0]
+    }
+
+    setInterval(function () {
+      const textarea = document.getElementById('editor').getElementsByClassName('ql-editor')[0].innerHTML;
+      const title = document.getElementById('title_input').value;
+      const content = Array(title, textarea);
+      localStorage.setItem("content", JSON.stringify(content));
+
+    }, 1000)
+
+
+    document.onkeydown = function () {
+      if (event.ctrlKey && window.event.keyCode == 83) {
+        return false;
+      }
+    }
+  </script>
+</body>
+
+</html>
