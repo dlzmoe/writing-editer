@@ -1,6 +1,6 @@
 ## writing-editer
 
-https://github.com/zburu/writing-editer
+https://github.com/98zi/writing-editer
 
 核心代码在 `index.html` 中，可自行开发。
 
